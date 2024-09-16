@@ -3,6 +3,7 @@ package sync
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	model "github.com/neuron-nexus/yandexgpt/internal/models/sync"
 	"io"
 	"net/http"
@@ -11,7 +12,7 @@ import (
 const URL = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
 
 func (a *App) sendRequestToYandexGPT(request *model.Request) (model.Response, error) {
-	byteData, err := json.Marshal(request)
+	byteData, err := json.Marshal(&request)
 	if err != nil {
 		return model.Response{}, err
 	}
@@ -31,6 +32,10 @@ func (a *App) sendRequestToYandexGPT(request *model.Request) (model.Response, er
 	}
 
 	defer httpResponse.Body.Close()
+
+	if httpResponse.StatusCode != 200 {
+		return model.Response{}, errors.New("yandex: " + httpResponse.Status)
+	}
 
 	var response model.Response
 

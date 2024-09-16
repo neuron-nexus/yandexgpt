@@ -5,13 +5,8 @@ import (
 	endpoint "github.com/neuron-nexus/yandexgpt/internal/endpoint/app/sync"
 	model "github.com/neuron-nexus/yandexgpt/internal/models/sync"
 	"github.com/neuron-nexus/yandexgpt/pkg/models/gpt"
+	"github.com/neuron-nexus/yandexgpt/pkg/models/key"
 	"github.com/neuron-nexus/yandexgpt/pkg/models/role"
-	"strconv"
-)
-
-const (
-	API_KEY string = "Api-Key"
-	Bearer  string = "Bearer"
 )
 
 type YandexGPTSyncApp struct {
@@ -20,48 +15,35 @@ type YandexGPTSyncApp struct {
 	Messages      []model.Message
 
 	LastResponse model.Response
+
+	LastMessageTokens int64
 }
 
-func New(Key string, KeyType string, StorageID string) (*YandexGPTSyncApp, error) {
-
-	if KeyType != API_KEY && KeyType != Bearer {
-		return nil, fmt.Errorf("invalid auth key type. Supported types: %s, %s", API_KEY, Bearer)
-	}
+func New(Key string, KeyType key.Type, StorageID string) (*YandexGPTSyncApp, error) {
 
 	app := endpoint.New()
-	app.InitCredential(Key, KeyType)
+	app.InitCredential(Key, KeyType.String())
 	app.InitStorageID(StorageID)
-	app.InitMaxTokens("2000")
+	app.InitMaxTokens(2000)
 
 	Messages := make([]model.Message, 0, 10)
 
 	return &YandexGPTSyncApp{
-		App:      app,
-		Messages: Messages,
+		App:               app,
+		Messages:          Messages,
+		LastMessageTokens: 0,
 	}, nil
 }
 
-func (p *YandexGPTSyncApp) ChangeCredentials(Key string, KeyType string) error {
-	if KeyType != API_KEY && KeyType != Bearer {
-		return fmt.Errorf("invalid auth key type. Supported types: %s, %s", API_KEY, Bearer)
-	}
-
-	p.App.InitCredential(Key, KeyType)
-
-	return nil
+func (p *YandexGPTSyncApp) ChangeCredentials(Key string, KeyType key.Type) {
+	p.App.InitCredential(Key, KeyType.String())
 }
 
-func (p *YandexGPTSyncApp) SetSystemPrompt(prompt string) error {
-	if prompt == "" {
-		return fmt.Errorf("invalid prompt. Prompt is required")
-	}
-
+func (p *YandexGPTSyncApp) SetSystemPrompt(prompt string) {
 	p.SystemMessage = model.Message{
 		Role: "system",
 		Text: prompt,
 	}
-
-	return nil
 }
 
 func (p *YandexGPTSyncApp) AddMessage(roleName role.Model, text string) error {
@@ -82,16 +64,18 @@ func (p *YandexGPTSyncApp) AddMessage(roleName role.Model, text string) error {
 }
 
 func (p *YandexGPTSyncApp) SetTemperature(temperature float64) {
-	p.App.InitTemperature(strconv.FormatFloat(temperature, 'g', 1, 64))
+	p.App.InitTemperature(temperature)
 }
 
-func (p *YandexGPTSyncApp) SetModel(modelName gpt.Model) error {
-	if modelName.String() != gpt.PRO.String() && modelName.String() != gpt.Lite.String() {
-		return fmt.Errorf("invalid model name. Supported models: %s, %s", gpt.PRO.String(), gpt.Lite.String())
-	}
-
+func (p *YandexGPTSyncApp) SetModel(modelName gpt.Model) {
 	p.App.InitModel(fmt.Sprintf("gpt://%s/%s", p.App.Credential.StorageID, modelName.String()))
-	return nil
+}
+
+func (p *YandexGPTSyncApp) GetLastText() (string, error) {
+	if len(p.LastResponse.Result.Alternatives) == 0 {
+		return "", fmt.Errorf("last response is empty")
+	}
+	return p.LastResponse.Result.Alternatives[0].Message.Text, nil
 }
 
 func (p *YandexGPTSyncApp) SendRequest() (model.Response, error) {
@@ -102,18 +86,18 @@ func (p *YandexGPTSyncApp) SendRequest() (model.Response, error) {
 		return model.Response{}, checkError
 	}
 
-	messages := make([]model.Message, len(p.Messages)+1)
-	messages[0] = p.SystemMessage
+	messages := make([]model.Message, 0, len(p.Messages)+1)
+	messages = append(messages, p.SystemMessage)
 	messages = append(messages, p.Messages...)
 
 	res, err := p.App.SendRequest(messages...)
 
-	// TODO: check token-length of all messages and delete part of them to make length less than 5000 tokens
-
-	if err == nil {
-		p.LastResponse = res
-		_ = p.AddMessage(role.Assistant, res.Result.Alternatives[0].Message.Text)
+	if err != nil {
+		return res, err
 	}
+
+	p.LastResponse = res
+	_ = p.AddMessage(role.Assistant, res.Result.Alternatives[0].Message.Text)
 
 	return res, err
 }

@@ -9,9 +9,9 @@ type Response struct {
 	Result struct {
 		Alternatives []Alternative `json:"alternatives"`
 		Usage        struct {
-			InputTextTokens  string `json:"input_text_tokens"`
-			CompletionTokens string `json:"completionTokens"`
-			TotalTokens      string `json:"totalTokens"`
+			InputTextTokens  int64 `json:"input_text_tokens"`
+			CompletionTokens int64 `json:"completionTokens"`
+			TotalTokens      int64 `json:"totalTokens"`
 		} `json:"usage"`
 		ModelVersion string `json:"modelVersion"`
 	} `json:"result"`

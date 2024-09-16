@@ -18,7 +18,7 @@ func (p *YandexGPTSyncApp) validateMessage(roleName role.Model) error {
 		return fmt.Errorf("invalid role. First message must have \"user\" role")
 	}
 
-	if p.Messages[len(p.Messages)-1].Role == roleName.String() {
+	if len(p.Messages) > 0 && p.Messages[len(p.Messages)-1].Role == roleName.String() {
 		return fmt.Errorf("invalid role. Previous message have the same role")
 	}
 
@@ -48,7 +48,7 @@ func (p *YandexGPTSyncApp) check() error {
 		}
 	}
 
-	if p.App.CompletionOptions.MaxTokens == "" {
+	if p.App.CompletionOptions.MaxTokens == 0 {
 		if err == nil {
 			err = fmt.Errorf("invalid max tokens. Set max tokens before using the app. Use InitMaxTokens function\n")
 		} else {
@@ -56,7 +56,7 @@ func (p *YandexGPTSyncApp) check() error {
 		}
 	}
 
-	if p.App.CompletionOptions.Temperature == "" {
+	if p.App.CompletionOptions.Temperature == 0 {
 		if err == nil {
 			err = fmt.Errorf("invalid temperature. Set temperature before using the app. Use InitTemperature function\n")
 		} else {

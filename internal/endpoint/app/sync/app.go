@@ -1,6 +1,8 @@
 package sync
 
-import model "github.com/neuron-nexus/yandexgpt/internal/models/sync"
+import (
+	model "github.com/neuron-nexus/yandexgpt/internal/models/sync"
+)
 
 type App struct {
 	Credential struct {
@@ -10,8 +12,8 @@ type App struct {
 	}
 
 	CompletionOptions struct {
-		MaxTokens   string
-		Temperature string
+		MaxTokens   int64
+		Temperature float64
 	}
 
 	ModelUri string
@@ -35,11 +37,11 @@ func (a *App) InitModel(ModelUri string) {
 	a.ModelUri = ModelUri
 }
 
-func (a *App) InitMaxTokens(MaxTokens string) {
+func (a *App) InitMaxTokens(MaxTokens int64) {
 	a.CompletionOptions.MaxTokens = MaxTokens
 }
 
-func (a *App) InitTemperature(Temperature string) {
+func (a *App) InitTemperature(Temperature float64) {
 	a.CompletionOptions.Temperature = Temperature
 }
 
@@ -48,7 +50,7 @@ func (a *App) SendRequest(messages ...model.Message) (model.Response, error) {
 
 	Request.ModelUri = a.ModelUri
 
-	Request.CompletionOptions.Stream = "false"
+	Request.CompletionOptions.Stream = false
 	Request.CompletionOptions.MaxTokens = a.CompletionOptions.MaxTokens
 	Request.CompletionOptions.Temperature = a.CompletionOptions.Temperature
 
