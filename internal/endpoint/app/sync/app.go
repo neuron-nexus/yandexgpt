@@ -1,4 +1,4 @@
-package App
+package sync
 
 import model "github.com/neuron-nexus/yandexgpt/internal/models/sync"
 

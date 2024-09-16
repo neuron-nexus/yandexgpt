@@ -14,7 +14,9 @@ func (p *YandexGPTSyncApp) validateRequestInput(modelVersion string, temperature
 		return fmt.Errorf("invalid temperature. Temperature should be between 0 and 1")
 	}
 
-	if p.SystemPrompt == "" {
+	if p.SystemMessage.Text == "" {
 		return fmt.Errorf("invalid system prompt. System prompt is required. Use SetSystemPrompt(prompt syting)")
 	}
+
+	return nil
 }
