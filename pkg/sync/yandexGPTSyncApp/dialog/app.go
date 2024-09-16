@@ -19,7 +19,7 @@ type YandexGPTSyncApp struct {
 	LastMessageTokens int64
 }
 
-func New(Key string, KeyType key.Type, StorageID string) (*YandexGPTSyncApp, error) {
+func New(Key string, KeyType key.Type, StorageID string) *YandexGPTSyncApp {
 
 	app := endpoint.New()
 	app.InitCredential(Key, KeyType.String())
@@ -32,7 +32,7 @@ func New(Key string, KeyType key.Type, StorageID string) (*YandexGPTSyncApp, err
 		App:               app,
 		Messages:          Messages,
 		LastMessageTokens: 0,
-	}, nil
+	}
 }
 
 func (p *YandexGPTSyncApp) ChangeCredentials(Key string, KeyType key.Type) {
@@ -64,6 +64,14 @@ func (p *YandexGPTSyncApp) AddMessage(roleName role.Model, text string) error {
 }
 
 func (p *YandexGPTSyncApp) SetTemperature(temperature float64) {
+
+	if temperature < 0 {
+		temperature = 0
+	}
+	if temperature > 1 {
+		temperature = 1
+	}
+
 	p.App.InitTemperature(temperature)
 }
 

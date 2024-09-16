@@ -49,6 +49,13 @@ func (p *YandexGPTSyncApp) SetSingleMessage(text string) {
 }
 
 func (p *YandexGPTSyncApp) SetTemperature(temperature float64) {
+	if temperature < 0 {
+		temperature = 0
+	}
+	if temperature > 1 {
+		temperature = 1
+	}
+
 	p.App.InitTemperature(temperature)
 }
 
