@@ -93,6 +93,7 @@ func main() {
 	}
 }
 ```
+This model automatically adds the response from Yandex GPT to the message list, so you will only need to add messages from users.
 
 ## Contributing
 
