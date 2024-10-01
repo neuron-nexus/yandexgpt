@@ -87,10 +87,34 @@ func (p *YandexGPTSyncApp) AddMessage(Message GPTMessage) error {
 	if Message.Text == "" {
 		return fmt.Errorf("empty message")
 	}
+	if Message.Role.String() == "" {
+		Message.Role = RoleUser
+	}
+	if Message.Role.String() != "user" && Message.Role.String() != "assistant" {
+		return fmt.Errorf("unknown role: %s. Use: \"user\" or \"assistant\"", Message.Role.String())
+	}
+
 	p.Message = append(p.Message, model.Message{
 		Role: Message.Role.String(),
 		Text: Message.Text,
 	})
+
+	return nil
+}
+
+func (p *YandexGPTSyncApp) AddRawMessages(Messages ...model.Message) error {
+	for _, Message := range Messages {
+		if Message.Text == "" {
+			return fmt.Errorf("empty message")
+		}
+		if Message.Role == "" {
+			Message.Role = "user"
+		}
+		if Message.Role != "user" && Message.Role != "assistant" {
+			return fmt.Errorf("unknown role: %s. Use: \"user\" or \"assistant\"", Message.Role)
+		}
+		p.Message = append(p.Message, Message)
+	}
 	return nil
 }
 
