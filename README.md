@@ -10,7 +10,7 @@ Neuron Nexus Yandex GPT is a Go framework for interacting with the Yandex GPT AP
 go get -u github.com/neuron-nexus/yandexgpt
 ```
 
-## Usage
+## Usage (v2.0.0)
 
 ### Single Message Mode
 

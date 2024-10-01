@@ -1,5 +1,7 @@
 package yandexgpt
 
+import model "github.com/neuron-nexus/yandexgpt/internal/models"
+
 var (
 	GPTModelLite = GPTModel{ModelName: "yandexgpt-lite/latest"}
 	GPTModelPRO  = GPTModel{ModelName: "yandexgpt/latest"}
@@ -9,6 +11,10 @@ var (
 
 	RoleUser      = RoleModel{RoleName: "user"}
 	RoleAssistant = RoleModel{RoleName: "assistant"}
+
+	ParatemeterTemperature = GPTParameterName{Name: "temperature"}
+	ParemeterPrompt        = GPTParameterName{Name: "prompt"}
+	ParameterMaxTokens     = GPTParameterName{Name: "max_tokens"}
 )
 
 // GPTModel - models of yandexGPT
@@ -36,4 +42,27 @@ type RoleModel struct {
 
 func (m *RoleModel) String() string {
 	return m.RoleName
+}
+
+type GPTMessage struct {
+	Role RoleModel
+	Text string
+}
+
+type GPTParameterName struct {
+	Name string
+}
+
+func (n *GPTParameterName) String() string {
+	return n.Name
+}
+
+type GPTParameter struct {
+	Name  GPTParameterName
+	Value string
+}
+
+type Response struct {
+	Result model.Result
+	Text   string
 }
