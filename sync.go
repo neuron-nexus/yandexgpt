@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	endpoint "github.com/neuron-nexus/yandexgpt/internal/endpoint/app/sync"
-	model "github.com/neuron-nexus/yandexgpt/internal/models"
+	endpoint "github.com/neuron-nexus/yandexgpt/v2/internal/endpoint/app/sync"
+	model "github.com/neuron-nexus/yandexgpt/v2/internal/models"
 )
 
 type YandexGPTSyncApp struct {

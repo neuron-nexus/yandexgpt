@@ -7,7 +7,7 @@ Neuron Nexus Yandex GPT is a Go framework for interacting with the Yandex GPT AP
 
 
 ```bash
-go get -u github.com/neuron-nexus/yandexgpt
+go get -u github.com/neuron-nexus/yandexgpt/v2
 ```
 
 ## Usage (v2.0.0)
@@ -21,7 +21,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/neuron-nexus/yandexgpt"
+	"github.com/neuron-nexus/yandexgpt/v2"
 )
 
 const (
@@ -83,7 +83,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/neuron-nexus/yandexgpt"
+	"github.com/neuron-nexus/yandexgpt/v2"
 	"os"
 	"strings"
 )

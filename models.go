@@ -1,6 +1,6 @@
 package yandexgpt
 
-import model "github.com/neuron-nexus/yandexgpt/internal/models"
+import model "github.com/neuron-nexus/yandexgpt/v2/internal/models"
 
 var (
 	GPTModelLite = GPTModel{ModelName: "yandexgpt-lite/latest"}

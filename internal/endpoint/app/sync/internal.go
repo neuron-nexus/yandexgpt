@@ -7,7 +7,7 @@ import (
 	"io"
 	"net/http"
 
-	model "github.com/neuron-nexus/yandexgpt/internal/models"
+	model "github.com/neuron-nexus/yandexgpt/v2/internal/models"
 )
 
 const URL = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
