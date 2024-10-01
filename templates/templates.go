@@ -1,15 +1,38 @@
 package templates
 
+import (
+	"github.com/neuron-nexus/yandexgpt/v2"
+	"github.com/neuron-nexus/yandexgpt/v2/internal/models"
+)
+
 type Template struct {
-	TemplateString string
+	Name string
+	Role yandexgpt.RoleModel
+	Text string
 }
 
-func New(templateString string) *Template {
+func New(Name string, Role yandexgpt.RoleModel, Message string) *Template {
 	return &Template{
-		TemplateString: templateString,
+		Name: Name,
+		Role: Role,
+		Text: Message,
 	}
 }
 
 func (t *Template) String() string {
-	return t.TemplateString
+	return t.Text
+}
+
+func (t *Template) ToMessage() yandexgpt.GPTMessage {
+	return yandexgpt.GPTMessage{
+		Role: t.Role,
+		Text: t.Text,
+	}
+}
+
+func (t *Template) ToRawMessage() models.Message {
+	return models.Message{
+		Role: t.Role.String(),
+		Text: t.Text,
+	}
 }
