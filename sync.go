@@ -102,6 +102,7 @@ func (p *YandexGPTSyncApp) AddMessage(Message GPTMessage) error {
 	return nil
 }
 
+// Unsafe: AddRawMessage is unsafe function. Use AddMessage(Message GPTMessage)
 func (p *YandexGPTSyncApp) AddRawMessage(Message model.Message) error {
 	if Message.Text == "" {
 		return fmt.Errorf("empty message")
