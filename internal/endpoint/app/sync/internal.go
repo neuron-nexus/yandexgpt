@@ -24,6 +24,7 @@ func (a *App) sendRequestToYandexGPT(request *model.Request) (model.Response, er
 	}
 
 	httpRequest.Header.Set("Authorization", a.Credential.KeyType+" "+a.Credential.Key)
+	httpRequest.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 
@@ -46,6 +47,5 @@ func (a *App) sendRequestToYandexGPT(request *model.Request) (model.Response, er
 	}
 
 	err = json.Unmarshal(byteResponse, &response)
-
 	return response, err
 }

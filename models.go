@@ -12,9 +12,9 @@ var (
 	RoleUser      = RoleModel{RoleName: "user"}
 	RoleAssistant = RoleModel{RoleName: "assistant"}
 
-	ParatemeterTemperature = GPTParameterName{Name: "temperature"}
-	ParemeterPrompt        = GPTParameterName{Name: "prompt"}
-	ParameterMaxTokens     = GPTParameterName{Name: "max_tokens"}
+	ParameterTemperature = GPTParameterName{Name: "temperature"}
+	ParameterPrompt      = GPTParameterName{Name: "prompt"}
+	ParameterMaxTokens   = GPTParameterName{Name: "max_tokens"}
 )
 
 // GPTModel - models of yandexGPT
