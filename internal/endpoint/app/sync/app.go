@@ -1,7 +1,7 @@
 package sync
 
 import (
-	model "github.com/neuron-nexus/yandexgpt/internal/models/sync"
+	model "github.com/neuron-nexus/yandexgpt/internal/models"
 )
 
 type App struct {

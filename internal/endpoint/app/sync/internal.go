@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	model "github.com/neuron-nexus/yandexgpt/internal/models/sync"
 	"io"
 	"net/http"
+
+	model "github.com/neuron-nexus/yandexgpt/internal/models"
 )
 
 const URL = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"

@@ -1,9 +1,8 @@
-package sync
+package models
 
 type Message struct {
-	Role   string `json:"role"`
-	Text   string `json:"text"`
-	Tokens int64  `json:"-"`
+	Role string `json:"role"`
+	Text string `json:"text"`
 }
 
 type Request struct {

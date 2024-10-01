@@ -1,4 +1,4 @@
-package sync
+package models
 
 type Alternative struct {
 	Message Message `json:"message"`
