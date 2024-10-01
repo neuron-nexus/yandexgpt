@@ -104,7 +104,7 @@ func main() {
 	configs := []yandexgpt.GPTParameter{
 		{
 			Name:  yandexgpt.ParameterPrompt, // Important!
-			Value: "Ты - профессиональный ассистент",
+			Value: "You are professional assistant",
 		},
 	}
 
