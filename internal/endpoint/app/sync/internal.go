@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	model "github.com/neuron-nexus/yandexgpt/internal/models/sync"
 	"io"
 	"net/http"
+
+	model "github.com/neuron-nexus/yandexgpt/v2/internal/models"
 )
 
 const URL = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
@@ -23,6 +24,7 @@ func (a *App) sendRequestToYandexGPT(request *model.Request) (model.Response, er
 	}
 
 	httpRequest.Header.Set("Authorization", a.Credential.KeyType+" "+a.Credential.Key)
+	httpRequest.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 
@@ -45,6 +47,5 @@ func (a *App) sendRequestToYandexGPT(request *model.Request) (model.Response, er
 	}
 
 	err = json.Unmarshal(byteResponse, &response)
-
 	return response, err
 }

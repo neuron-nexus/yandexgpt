@@ -7,10 +7,10 @@ Neuron Nexus Yandex GPT is a Go framework for interacting with the Yandex GPT AP
 
 
 ```bash
-go get -u github.com/neuron-nexus/yandexgpt
+go get -u github.com/neuron-nexus/yandexgpt/v2
 ```
 
-## Usage
+## Usage (v2.0.0)
 
 ### Single Message Mode
 
@@ -21,9 +21,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/neuron-nexus/yandexgpt/pkg/models/gpt"
-	"github.com/neuron-nexus/yandexgpt/pkg/models/key"
-	single "github.com/neuron-nexus/yandexgpt/pkg/sync/yandexGPTSyncApp/message"
+	"github.com/neuron-nexus/yandexgpt/v2"
 )
 
 const (
@@ -33,17 +31,37 @@ const (
 
 func main() {
 
-    // Initializing the single-mode model
-	singleMode := single.New(GPT_API_KEY, key.API_KEY, STORAGE_ID)
-	singleMode.SetModel(gpt.PRO) // Also posible gpt.LITE
-	singleMode.SetTemperature(0.5) // Any float64 nubmer from 0 to 1
-	singleMode.SetSystemPrompt("You are a professional Go programmer") // Any system prompt
-    // Request from user
-	singleMode.SetSingleMessage("Write a program in Go that outputs \"Hello World\" to the console") 
+    app := yandexgpt.NewYandexGPTSyncApp(
+		KEY,
+		yandexgpt.API_KEY,
+		STORAGE_ID,
+		yandexgpt.GPTModelPRO,
+	)
 
-	resp, _ := singleMode.SendRequest()
+	configs := []yandexgpt.GPTParameter{
+		{
+			Name:  yandexgpt.ParameterPrompt, // Important!
+			Value: "You are professional Go programmer",
+		},
+		{
+			Name:  yandexgpt.ParameterTemperature, // Default: 0.3
+			Value: "0.7",
+		},
+		{
+			Name:  yandexgpt.ParameterMaxTokens, // Default: 2000
+			Value: "1000",
+		},
+	}
 
-	fmt.Println("\nAssistant:\n", resp.Result.Alternatives[0].Message.Text)
+	app.Configure(configs...)
+	message := yandexgpt.GPTMessage{
+		Role: yandexgpt.RoleUser,
+		Text: "Write a programm that prints 'Hello World'",
+	}
+
+	app.AddMessage(message)
+	res, err := app.SendRequest()
+	println(res.Text)
 }
 ```
 
@@ -65,10 +83,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/neuron-nexus/yandexgpt/pkg/models/gpt"
-	"github.com/neuron-nexus/yandexgpt/pkg/models/key"
-	"github.com/neuron-nexus/yandexgpt/pkg/models/role"
-	"github.com/neuron-nexus/yandexgpt/pkg/sync/yandexGPTSyncApp/dialog"
+	"github.com/neuron-nexus/yandexgpt/v2"
 	"os"
 	"strings"
 )
@@ -79,17 +94,41 @@ const (
 )
 
 func main() {
-	dialogMode := dialog.New(GPT_API_KEY, key.API_KEY, STORAGE_ID)
-	dialogMode.SetModel(gpt.PRO)
-	dialogMode.SetTemperature(0.5)
-	dialogMode.SetSystemPrompt("You are a professional Go programmer")
+	app := yandexgpt.NewYandexGPTSyncApp(
+		KEY,
+		yandexgpt.API_KEY,
+		STORAGE_ID,
+		yandexgpt.GPTModelPRO,
+	)
+
+	configs := []yandexgpt.GPTParameter{
+		{
+			Name:  yandexgpt.ParameterPrompt, // Important!
+			Value: "You are professional assistant",
+		},
+	}
+
+	err := app.Configure(configs...)
+	if err != nil {
+		panic(err)
+	}
 
 	for {
+		//read text from console
 		fmt.Print("You: ")
-		message, _ := bufio.NewReader(os.Stdin).ReadString('\n')
-		_ = dialogMode.AddMessage(role.User, strings.TrimSpace(message))
-		resp, _ := dialogMode.SendRequest()
-		fmt.Println("Assistant: ", resp.Result.Alternatives[0].Message.Text)
+		text, _ := bufio.NewReader(os.Stdin).ReadString('\n')
+
+		if text == "exit" {
+			return
+		}
+
+		app.AddMessage(yandexgpt.GPTMessage{
+			Role: yandexgpt.RoleUser,
+			Text: strings.TrimSpace(text),
+		})
+		res, _ := app.SendRequest()
+		fmt.Println("Assistant: ", res.Text)
+		app.AddRawMessage(res.Result.Alternatives[0].Message)
 	}
 }
 ```
@@ -100,7 +139,3 @@ Pull requests are welcome. For major changes, please open an issue first
 to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
