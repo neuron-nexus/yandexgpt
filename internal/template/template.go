@@ -23,14 +23,3 @@ func (t *Template) ToRawMessage() models.Message {
 		Text: t.Text,
 	}
 }
-
-func (t *Template) RoleFromString(role string) yandexgpt.RoleModel {
-	switch role {
-	case "user":
-		return yandexgpt.RoleUser
-	case "assistant":
-		return yandexgpt.RoleAssistant
-	default:
-		return yandexgpt.RoleUser
-	}
-}
