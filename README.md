@@ -133,6 +133,35 @@ func main() {
 }
 ```
 
+## Templates
+
+For using templates import `github.com/neuron-nexus/yandexgpt/v2/templates`
+
+### Usage
+
+```go
+	templates := templates.NewTemplateList()
+	filepath := "templates.csv"
+
+	templates.Add("test3",
+		yandexgpt.GPTMessage{
+			Role: yandexgpt.RoleUser,
+			Text: "test3",
+		})
+	templates.Add("test4",
+		yandexgpt.GPTMessage{
+			Role: yandexgpt.RoleUser,
+			Text: "test4",
+		})
+	templates.Add("test5",
+		yandexgpt.GPTMessage{
+			Role: yandexgpt.RoleUser,
+			Text: "test5",
+		})
+	templates.ToCSV(filepath) // Save to CSV file
+	templates.FromCSV(filepath) // Load from CSV file
+```
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first
