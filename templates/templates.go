@@ -3,6 +3,7 @@ package templates
 import (
 	"encoding/csv"
 	"os"
+	"sync"
 
 	"github.com/neuron-nexus/yandexgpt/v2"
 	"github.com/neuron-nexus/yandexgpt/v2/internal/template"
@@ -10,6 +11,7 @@ import (
 
 type Templates struct {
 	Template *(map[string]*template.Template)
+	mutex    sync.Mutex
 }
 
 func NewTemplateList() *Templates {
@@ -23,6 +25,8 @@ func (t *Templates) Add(name string, message yandexgpt.GPTMessage) {
 		message.Role,
 		message.Text,
 	)
+	t.mutex.Lock()
+	defer t.mutex.Unlock()
 	(*t.Template)[name] = template
 }
 
@@ -70,7 +74,7 @@ func (t *Templates) FromCSV(filepath string) error {
 		if i == 0 {
 			continue
 		}
-		t.Add(record[0],
+		go t.Add(record[0],
 			yandexgpt.GPTMessage{
 				Role: t.roleFromString(record[1]),
 				Text: record[2],
