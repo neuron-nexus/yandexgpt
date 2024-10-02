@@ -18,7 +18,11 @@ func NewTemplateList() *Templates {
 	}
 }
 
-func (t *Templates) Add(name string, template *template.Template) {
+func (t *Templates) Add(name string, message yandexgpt.GPTMessage) {
+	template := template.New(
+		message.Role,
+		message.Text,
+	)
 	(*t.Template)[name] = template
 }
 
@@ -31,7 +35,7 @@ func (t *Templates) GetAll() *(map[string]*template.Template) {
 }
 
 func (t *Templates) ToCSV(filepath string) error {
-	file, err := os.Open(filepath)
+	file, err := os.Create(filepath)
 	if err != nil {
 		return err
 	}
@@ -62,11 +66,15 @@ func (t *Templates) FromCSV(filepath string) error {
 	if err != nil {
 		return err
 	}
-	for _, record := range records {
-		t.Add(record[0], &template.Template{
-			Role: t.roleFromString(record[1]),
-			Text: record[2],
-		})
+	for i, record := range records {
+		if i == 0 {
+			continue
+		}
+		t.Add(record[0],
+			yandexgpt.GPTMessage{
+				Role: t.roleFromString(record[1]),
+				Text: record[2],
+			})
 	}
 	return nil
 }

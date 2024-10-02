@@ -10,6 +10,13 @@ type Template struct {
 	Text string
 }
 
+func New(Role yandexgpt.RoleModel, Text string) *Template {
+	return &Template{
+		Role: Role,
+		Text: Text,
+	}
+}
+
 func (t *Template) ToMessage() yandexgpt.GPTMessage {
 	return yandexgpt.GPTMessage{
 		Role: t.Role,

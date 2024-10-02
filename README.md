@@ -32,7 +32,7 @@ const (
 func main() {
 
     app := yandexgpt.NewYandexGPTSyncApp(
-		KEY,
+		GPT_API_KEY,
 		yandexgpt.API_KEY,
 		STORAGE_ID,
 		yandexgpt.GPTModelPRO,
@@ -95,7 +95,7 @@ const (
 
 func main() {
 	app := yandexgpt.NewYandexGPTSyncApp(
-		KEY,
+		GPT_API_KEY,
 		yandexgpt.API_KEY,
 		STORAGE_ID,
 		yandexgpt.GPTModelPRO,
